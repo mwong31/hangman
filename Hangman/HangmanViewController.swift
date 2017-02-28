@@ -47,6 +47,7 @@ class HangmanViewController: UIViewController {
         
         hangmanState.image = image
         incorrectGuesses.text = "Incorrect guesses: "
+        incorrectGuesses.textAlignment = .center
         
         let hangmanPhrases = HangmanPhrases()
         
@@ -57,6 +58,7 @@ class HangmanViewController: UIViewController {
         
         let defaultBlanks: String = getBlanks(phrase: phrase)
         blanks.text = defaultBlanks
+        blanks.textAlignment = .center
         
     }
 
@@ -106,7 +108,7 @@ class HangmanViewController: UIViewController {
     
     func checkGuess(guess: String) -> Bool {
 
-        if guess.isAlphanumeric && guess.characters.count == 1 {
+        if guess.isAlpha && guess.characters.count == 1 {
             return true
         } else {
             let alert = UIAlertController(title: "", message: "Please enter a valid single letter as your guess!", preferredStyle: UIAlertControllerStyle.alert)
@@ -122,6 +124,14 @@ class HangmanViewController: UIViewController {
         
         if phrase.range(of: guess) != nil {
             var currText : String? = blanks.text
+            
+            if (currText!.range(of: guess) != nil) {
+                let alert = UIAlertController(title: "", message: "You have already guessed this letter!", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return;
+            }
+            
             let indices = phrase.indicesOf(string: guess)
             var arrText : [Character] = Array(currText!.characters)
             numSlots -= indices.count
@@ -142,8 +152,15 @@ class HangmanViewController: UIViewController {
                 viewDidLoad()
             }
         } else {
-            
             var currIncorrectGuesses : String? = incorrectGuesses.text
+            
+            if (currIncorrectGuesses!.range(of: guess) != nil) {
+                let alert = UIAlertController(title: "", message: "You have already guessed this letter!", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return;
+            }
+            
             currIncorrectGuesses! += guess + " "
             incorrectGuesses.text = currIncorrectGuesses
             numIncorrect += 1
